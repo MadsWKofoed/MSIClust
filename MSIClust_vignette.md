@@ -1,9 +1,11 @@
-Using MSIClust
+MSIClust Vignette
 ================
-Rscripts MSI clustering workflow
-2026-05-24
+MSI clustering workflow
+2026-05-26
 
 - [Purpose](#purpose)
+- [Repository Contents](#repository-contents)
+- [Quick Start](#quick-start)
 - [What MSIClust Does](#what-msiclust-does)
 - [Packages](#packages)
 - [Input Format](#input-format)
@@ -29,11 +31,52 @@ It only covers the MSIClust workflow and the helper functions needed to
 prepare input, run the clustering, inspect the fuzzy memberships, and
 plot the result.
 
-The reusable MSIClust implementation now lives in one standalone script:
+If you are viewing this on GitHub, use the rendered
+[`MSIClust_vignette.md`](MSIClust_vignette.md) file. The figures used by
+the rendered vignette are stored in
+`MSIClust_vignette_files/figure-gfm/`.
 
-| Script | What it provides |
+# Repository Contents
+
+| File or folder | Purpose |
 |----|----|
-| `MSIClust_helpers.R` | Data-frame construction, MSIClust preparation, neighbor correlations, fuzzy clustering, label handling, and cluster plotting. |
+| `MSIClust_vignette.Rmd` | Source vignette. |
+| `MSIClust_vignette.md` | GitHub-rendered vignette with static output and figures. |
+| `MSIClust_function_map.md` | Compact lookup table for the helper functions. |
+| `example_data/Synthetic_MSIClust/` | Synthetic imzML example used in the vignette. |
+| `MSIClust_helpers.R` | Standalone helper script containing the MSIClust implementation. |
+
+# Quick Start
+
+For an existing MSI pixel data frame with `x`, `y`, and `mz_...`
+columns, the core workflow is:
+
+``` r
+source("MSIClust_helpers.R")
+
+prep <- prepare_msiclust_input(
+  msi_df = msi_df,
+  normalize_method = "tic",
+  feature_standardize = "sd",
+  neighbor_radius = 1,
+  cor_cores = 8,
+  cor_scale = 25
+)
+
+msiclust_res <- run_msiclust(
+  prep = prep,
+  nclust = 3,
+  iter_max = 100,
+  min_membership = 0.5,
+  seed = 1
+)
+
+clustered_df <- append_msiclust_labels(prep, msiclust_res)
+plot_msiclust_map(clustered_df, cluster_col = "MSIClust_cluster")
+```
+
+The sections below walk through the same workflow in more detail,
+including a synthetic imzML example.
 
 # What MSIClust Does
 
@@ -93,11 +136,7 @@ can be present, but the core helper functions look for `x`, `y`, and
 # Load Helpers
 
 ``` r
-script_root <- if (basename(getwd()) == "docs") {
-  normalizePath("..", mustWork = FALSE)
-} else {
-  normalizePath(".", mustWork = FALSE)
-}
+script_root <- normalizePath(".", mustWork = FALSE)
 
 source(file.path(script_root, "MSIClust_helpers.R"))
 ```
@@ -151,7 +190,7 @@ msi_df <- make_msi_dataframe(msi_data_binned)
 
 This vignette uses a compact synthetic imzML/ibd pair generated
 specifically for demonstrating MSIClust. The files are in
-`docs/example_data/Synthetic_MSIClust/`.
+`example_data/Synthetic_MSIClust/`.
 
 The synthetic data contain a 45 x 35 pixel image with 120 m/z features.
 Four spatial regions were simulated with shared peaks, region-specific
@@ -166,7 +205,6 @@ system2(
   "Rscript",
   file.path(
     script_root,
-    "docs",
     "example_data",
     "Synthetic_MSIClust",
     "generate_synthetic_msiclust_imzml.R"
@@ -182,7 +220,6 @@ library(ggplot2)
 
 synthetic_dir <- file.path(
   script_root,
-  "docs",
   "example_data",
   "Synthetic_MSIClust"
 )
