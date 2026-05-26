@@ -1,0 +1,8 @@
+Synthetic MSIClust imzML example
+seed: 20260524
+grid: 45x35
+pixels: 1575
+m/z features: 120
+m/z range: 400 - 900
+regions: matrix, region_a, region_b, region_c
+note: synthetic_region labels document the simulated design and are not used by MSIClust
