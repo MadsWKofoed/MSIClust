@@ -115,6 +115,9 @@ library(BiocParallel)
 The included synthetic imzML example was generated with `CardinalIO`; you only
 need `CardinalIO` if you want to regenerate those example files.
 
+`vsclust` and `Cardinal` are Bioconductor packages. See the
+[README](README.md#installation) for installation commands.
+
 # Input Format
 
 MSIClust expects one row per pixel:
@@ -131,6 +134,8 @@ present, but the core helper functions look for `x`, `y`, and `mz_...`.
 
 # Load Helpers
 
+Start R from the repository root: the paths in this vignette are relative to it.
+
 ```{r load-helpers, eval=FALSE}
 script_root <- normalizePath(".", mustWork = FALSE)
 
@@ -140,7 +145,9 @@ source(file.path(script_root, "MSIClust_helpers.R"))
 # From Cardinal Object to Data Frame
 
 If you already have `msi_df`, skip this section. If you have a binned Cardinal
-MSI object, convert it with `make_msi_dataframe()`.
+MSI object, convert it with `make_msi_dataframe()`. Attach Cardinal first with
+`library(Cardinal)`; calling it only as `Cardinal::...` is not enough for
+`make_msi_dataframe()`.
 
 ```{r make-msi-df, eval=FALSE}
 msi_df <- make_msi_dataframe(msi_data_binned)

@@ -1,7 +1,7 @@
 MSIClust Vignette
 ================
 MSI clustering workflow
-2026-05-26
+2026-09-21
 
 - [Purpose](#purpose)
 - [Repository Contents](#repository-contents)
@@ -118,6 +118,9 @@ The included synthetic imzML example was generated with `CardinalIO`;
 you only need `CardinalIO` if you want to regenerate those example
 files.
 
+`vsclust` and `Cardinal` are Bioconductor packages. See the
+[README](README.md#installation) for installation commands.
+
 # Input Format
 
 MSIClust expects one row per pixel:
@@ -135,6 +138,9 @@ can be present, but the core helper functions look for `x`, `y`, and
 
 # Load Helpers
 
+Start R from the repository root: the paths in this vignette are
+relative to it.
+
 ``` r
 script_root <- normalizePath(".", mustWork = FALSE)
 
@@ -144,7 +150,9 @@ source(file.path(script_root, "MSIClust_helpers.R"))
 # From Cardinal Object to Data Frame
 
 If you already have `msi_df`, skip this section. If you have a binned
-Cardinal MSI object, convert it with `make_msi_dataframe()`.
+Cardinal MSI object, convert it with `make_msi_dataframe()`. Attach
+Cardinal first with `library(Cardinal)`; calling it only as
+`Cardinal::...` is not enough for `make_msi_dataframe()`.
 
 ``` r
 msi_df <- make_msi_dataframe(msi_data_binned)
